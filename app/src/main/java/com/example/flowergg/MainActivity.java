@@ -1,6 +1,7 @@
 package com.example.flowergg;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -40,19 +41,22 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        FlowerAdapter adapter = new FlowerAdapter(mFlowers);
-        mRecyclerView.setAdapter(adapter);
+
 
         mProgressBar.setVisibility(View.VISIBLE);
 
         FlowersAPI flowersAPI = FlowersAPI.retrofit.create(FlowersAPI.class);
         final Call<List<Flower>> call = flowersAPI.getData();
+
         call.enqueue(new Callback<List<Flower>>() {
                          @Override
                          public void onResponse(Call<List<Flower>> call, Response<List<Flower>> response) {
                              // response.isSuccessfull() возвращает true если код ответа 2xx
                              if (response.isSuccessful()) {
-                                 mFlowers.addAll(response.body());
+                                 List<Flower> newFlower = response.body();
+                                 FlowerAdapter adapter = new FlowerAdapter(newFlower);
+                                 mRecyclerView.setAdapter(adapter);
+
                                  mRecyclerView.getAdapter().notifyDataSetChanged();
                                  mProgressBar.setVisibility(View.INVISIBLE);
                              } else {
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                          @Override
                          public void onFailure(Call<List<Flower>> call, Throwable throwable) {
-                             Toast.makeText(MainActivity.this, "Что-то пошло не так",
+                             Toast.makeText(MainActivity.this, "" + throwable,
                                      Toast.LENGTH_SHORT).show();
                              mProgressBar.setVisibility(View.INVISIBLE);
                          }

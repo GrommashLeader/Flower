@@ -8,11 +8,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
 interface FlowersAPI {
+
     @GET("feeds/flowers.json")
     Call<List<Flower>> getData();
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://services.hanselandpetal.com/")
+            .baseUrl("https://services.hanselandpetal.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
